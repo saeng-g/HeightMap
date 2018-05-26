@@ -5,8 +5,6 @@
 /*
  
  COMP 371 - Assignment #1
- Professor Cha
- Kyungjin Kim (ID: 40066802)
  due date: Monday May 14th, 2018 (5:00PM)
  
  basic code taken from Lab 1
