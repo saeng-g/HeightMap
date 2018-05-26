@@ -5,6 +5,10 @@
 /*
  
  COMP 371 - Assignment #1
+ Professor Cha
+ Kyungjin Kim (ID: 40066802)
+ due date: Monday May 14th, 2018 (5:00PM)
+ 
  basic code taken from Lab 1
  modified from http://learnopengl.com/
  
@@ -104,9 +108,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key == GLFW_KEY_P && action == GLFW_PRESS)
         drawtype = GL_POINTS;
     if (key == GLFW_KEY_W && action == GLFW_PRESS)
-        drawtype = GL_LINE_STRIP;
+        drawtype = GL_LINES;
     if (key == GLFW_KEY_T && action == GLFW_PRESS)
-        drawtype = GL_TRIANGLE_STRIP;
+        drawtype = GL_TRIANGLES;
 }
 
 // Is called whenever user scrolls via GLFW
@@ -155,7 +159,7 @@ int main()
     
     // READING IMAGE FILE
     //Loading Greyscale Image
-    CImg<unsigned char> map("hm.jpg");
+    CImg<unsigned char> map("hm.png");
     GLuint map_h = map.height();
     GLuint map_w = map.width();
     std::cout << "Map Height: " << map_h << std::endl;
@@ -185,31 +189,31 @@ int main()
     ////////////////////////////////////////////////////////////////////
     
     //determine indices for mesh creation
-    int numDegen = 2 * (map_h - 1);
-    int indexSize = map_h*map_w*2 + numDegen;
+    int indexSize = (map_h-1)*(map_w-1)*6;
     std::cout << "Numer of IndiceData: " << indexSize << std::endl;
     
     //indiceData created on heap
     //Note: was getting bad memory access error on stack, stack size might not be big enough?
     GLuint* indiceData = new GLuint[indexSize];
     int offset = 0;
-    for (int i = 0; i < map_h; i++)
+    for (int i = 0; i < map_h - 1; i++)
     {
-        if (i > 0)
+        for (int j = 0; j < map_w - 1; j++)
         {
-            indiceData[offset] = (GLuint) i*map_w;
-            offset++;
-        }
-        for (int j = 0; j < map_h; j++)
-        {
+            //upper triangle
             indiceData[offset] = (GLuint) i*map_w + j;
+            offset++;
+            indiceData[offset] = (GLuint) i*map_w + j + 1;
             offset++;
             indiceData[offset] = (GLuint) (i+1)*map_w + j;
             offset++;
-        }
-        if (i < map_h - 1)
-        {
-            indiceData[offset] = (GLuint) (i+1)*map_w + map_h - 1;
+            
+            //lower triangle
+            indiceData[offset] = (GLuint) (i+1)*map_w + j + 1;
+            offset++;
+            indiceData[offset] = (GLuint) (i+1)*map_w + j;
+            offset++;
+            indiceData[offset] = (GLuint) i*map_w + j + 1;
             offset++;
         }
     }
